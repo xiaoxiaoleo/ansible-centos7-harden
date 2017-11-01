@@ -1,0 +1,32 @@
+---
+- name:  replace sshd_config
+  template: src={{ item }}  dest=/{{ item }}  owner=root group=root mode=644  backup=yes
+  become: yes
+  become_method: sudo
+  tags: 
+    - t_harden_5
+  notify:
+    - restart sshd
+  with_items:
+    - etc/ssh/sshd_config
+
+- name:  semanage port -a -t ssh_port_t -p tcp 63456
+  shell: semanage port -a -t ssh_port_t -p tcp 63456
+  become: yes
+  become_method: sudo
+  tags: 
+    - t_harden_5
+  notify:
+    - restart sshd
+  ignore_errors: True
+  tags: 
+    - t_harden_5
+
+ 
+- name: restart sshd
+  shell: systemctl restart  sshd.service
+  ignore_errors: True
+  become: yes
+  become_method: sudo
+  tags: 
+    - t_harden_5

@@ -1,0 +1,14 @@
+---
+- name: 3.1 disable core dump
+  template: src=etc/security/limits.conf  dest=/etc/security/limits.conf  owner=root group=root mode=644 backup=yes
+  become: yes
+  become_method: sudo
+  tags: 
+    - t_harden_3_1
+ 
+- name: 3.2 set  /etc/sysctl.conf 600
+  file: path=/etc/sysctl.conf owner=root group=root mode=600
+  become: yes
+  become_method: sudo
+  tags: 
+    - t_harden_3_2

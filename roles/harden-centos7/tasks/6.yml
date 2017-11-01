@@ -1,0 +1,13 @@
+---
+- name:  6.1 Replace /etc/ssh/audit.rules
+  copy: 
+    src: ./files/audit.rules
+    dest: /etc/audit/audit.rules
+  become: yes
+  become_method: sudo
+  notify:
+    - reload audit
+  tags: 
+    - t_harden_6
+
+

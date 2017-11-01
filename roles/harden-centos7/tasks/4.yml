@@ -1,0 +1,11 @@
+- name: 4.1 close useless service 
+  shell: systemctl  stop postfix.service
+  ignore_errors: True
+  become: yes
+  become_method: sudo
+
+- name: 4.1 close useless service 
+  shell: systemctl  disable postfix.service
+  ignore_errors: True
+  become: yes
+  become_method: sudo

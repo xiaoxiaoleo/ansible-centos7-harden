@@ -1,0 +1,84 @@
+
+Port 63456
+#AddressFamily any
+#ListenAddress 0.0.0.0
+#ListenAddress ::
+
+Protocol 2
+
+# HostKey for protocol version 1
+#HostKey /etc/ssh/ssh_host_key
+# HostKeys for protocol version 2
+HostKey /etc/ssh/ssh_host_rsa_key
+#HostKey /etc/ssh/ssh_host_dsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+HostKey /etc/ssh/ssh_host_ed25519_key
+
+# Lifetime and size of ephemeral version 1 server key
+#KeyRegenerationInterval 1h
+#ServerKeyBits 1024
+
+# Ciphers and keying
+#RekeyLimit default none
+
+# Logging
+# obsoletes QuietMode and FascistLogging
+#SyslogFacility AUTH
+SyslogFacility AUTHPRIV
+LogLevel  info
+
+# Authentication:
+
+#LoginGraceTime 2m
+PermitRootLogin no
+#StrictModes yes
+#MaxAuthTries 6
+#MaxSessions 10
+
+RSAAuthentication yes
+PubkeyAuthentication yes
+
+AuthorizedKeysFile	.ssh/authorized_keys
+
+#AuthorizedPrincipalsFile none
+
+
+RSAAuthentication yes
+
+IgnoreRhosts yes
+
+
+PermitEmptyPasswords  no
+PasswordAuthentication no
+
+# Change to no to disable s/key passwords
+#ChallengeResponseAuthentication yes
+ChallengeResponseAuthentication no
+
+
+# GSSAPI options
+GSSAPIAuthentication yes
+GSSAPICleanupCredentials no
+#GSSAPIStrictAcceptorCheck yes
+#GSSAPIKeyExchange no
+#GSSAPIEnablek5users no
+
+PermitRootLogin no
+
+UsePAM yes
+
+X11Forwarding yes
+UsePrivilegeSeparation sandbox		# Default for new installations.
+
+ClientAliveInterval 300
+ClientAliveCountMax 0
+
+AcceptEnv LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES
+AcceptEnv LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT
+AcceptEnv LC_IDENTIFICATION LC_ALL LANGUAGE
+AcceptEnv XMODIFIERS
+
+# override default of no subsystems
+Subsystem	sftp	/usr/libexec/openssh/sftp-server
+
+ 

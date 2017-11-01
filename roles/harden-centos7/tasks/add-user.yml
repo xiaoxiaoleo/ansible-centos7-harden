@@ -1,0 +1,49 @@
+---
+- name: Make sure we have a 'wheel' group
+  group:
+    name: wheel
+    state: present
+- name: Allow 'wheel' group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+  become: yes
+  become_method: sudo
+  tags:
+    - t_create_user
+
+- name: Create user 
+  user: name={{ item.username }} shell=/bin/bash groups=wheel createhome=yes home=/home/{{ item.username }}
+  with_items: "{{users}}"
+  become: yes
+  become_method: sudo
+  tags:
+    - t_create_user
+
+- name: create RSA key directory
+  action: file path=/home/{{ item.username }}/.ssh/ state=directory  owner={{ item.username }} group={{ item.username }} mode=0700
+  with_items: "{{users}}"
+  become: yes
+  become_method: sudo
+  tags:
+    - t_create_user
+    
+- name: create RSA public key  
+  action: file path=/home/{{ item.username }}/.ssh/authorized_keys state=touch  owner={{ item.username }} group={{ item.username }} mode=0600
+  with_items: "{{users}}"
+  become: yes
+  become_method: sudo
+  tags:
+    - t_create_user
+    
+- name: Set authorized key took from file
+  authorized_key: user={{ item.username }} key="{{ lookup('file', './files/pubkey/{{ item.username }}_id_rsa.pub') }}"
+  with_items: "{{users}}"
+  become: yes
+  become_method: sudo
+  tags:
+    - t_create_user
+    

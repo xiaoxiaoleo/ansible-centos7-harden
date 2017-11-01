@@ -1,0 +1,11 @@
+---
+
+- name: config rsyslog.conf 
+  template: src=client-rsyslog.conf dest=/etc/rsyslog.conf  owner=root group=root mode=644  backup=yes
+  notify:
+    - restart rsyslog
+  become: yes
+  become_method: sudo
+  tags: 
+    - t_harden_10
+  when: inventory_hostname != "w_log"

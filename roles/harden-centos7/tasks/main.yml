@@ -1,0 +1,15 @@
+---
+# tasks file for harden-centos7
+- include: tasks/install-dep.yml
+
+- include: tasks/add-user.yml
+- include: tasks/1.yml
+- include: tasks/2.yml
+- include: tasks/3.yml
+- include: tasks/4.yml
+- include: tasks/5.yml
+- include: tasks/6.yml
+- include: tasks/7.yml
+- include: tasks/8.yml
+- include: tasks/9.yml
+- include: tasks/10.yml

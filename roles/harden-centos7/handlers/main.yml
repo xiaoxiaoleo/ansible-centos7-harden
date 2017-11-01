@@ -1,0 +1,31 @@
+---
+# handlers file for harden-centos7
+
+- name: restart rsyslog
+  shell: systemctl restart rsyslog
+  ignore_errors: True
+  become: yes
+  become_method: sudo
+
+
+
+- name: restart audit
+  shell: systemctl restart  auditd.service
+  ignore_errors: True
+  become: yes
+  become_method: sudo
+
+- name: reload audit
+  shell: systemctl reload auditd
+  ignore_errors: True
+  become: yes
+  become_method: sudo
+
+
+- name: restart sshd
+  shell: systemctl restart  sshd.service
+  ignore_errors: True
+  become: yes
+  become_method: sudo
+  tags: 
+    - t_harden_5

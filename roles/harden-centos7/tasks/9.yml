@@ -1,0 +1,46 @@
+---
+
+- name:  9.1 protect grub2 bootloader with password 
+  template: src=40_custom  dest={{ item }}  owner=root group=root mode=655 backup=yes
+  become: yes
+  become_method: sudo
+  tags: 
+    - t_harden_2_3
+  with_items:
+    - /etc/grub.d/40_custom
+
+# - file:
+#     path: /boot/efi/EFI/centos/grub.cfg
+#     state: touch
+#     mode: "u=rw,g=r,o=r"
+#   become: yes
+#   become_method: sudo
+
+- name:  Generate New grub.cfg
+  shell: grub2-mkconfig --output=/tmp/grub2.cfg
+  become: yes
+  become_method: sudo
+
+- name: Replace this New configured grub2.cfg with existing grub2.cfg
+  shell: datename=$(date +%Y%m%d-%H%M%S) &&   mv /boot/grub2/grub.cfg  /boot/grub2/grub.cfg_datename && mv /tmp/grub2.cfg /boot/grub2/grub.cfg
+  become: yes
+  become_method: sudo
+
+# - name: ensure file exists
+#   copy:
+#     content: ""
+#     dest: /etc/boot/efi/EFI/centos/grub.cfg
+#     force: no
+#     group: root
+#     owner: root
+#     mode: 0644
+#   tags: 
+#     - t_harden_2_3
+
+# - lineinfile: dest=/boot/efi/EFI/centos/grub.cfg insertafter=EOF line=""   backup=yes
+#   become: yes
+#   become_method: sudo
+
+# - shell: grub2-mkconfig -o /boot/efi/EFI/centos/grub.cfg
+#   become: yes
+#   become_method: sudo

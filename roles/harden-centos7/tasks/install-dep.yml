@@ -1,0 +1,35 @@
+---
+# remove telnet after  finished all config.
+- name: install aide
+  yum: name=aide state=present
+  become: yes
+  become_method: sudo
+  tags: install_dep
+
+- name: install telnet
+  yum: name=telnet state=present
+  become: yes
+  become_method: sudo
+  tags: install_dep
+
+- name: remove rsyslog
+  yum:
+    name: httpd
+    state: absent
+
+  tags: install_dep
+  ignore_errors: True
+
+- name: remove syslog
+  yum:
+    name: httpd
+    state: present
+
+  tags: install_dep
+  ignore_errors: True
+
+- name: install semange
+  yum:
+    name: policycoreutils-python
+    state: present
+  tags: install_se

@@ -1,0 +1,9 @@
+---
+# vars file for harden-centos7
+
+users:
+  - username: x 
+  - username: x 
+environment:
+  http_proxy: 
+  https_proxy:

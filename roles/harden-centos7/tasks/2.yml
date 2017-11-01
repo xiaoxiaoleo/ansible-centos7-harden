@@ -1,0 +1,67 @@
+---
+- name: 2.1 specifiy user  at/cron 
+  file: state=absent path=/etc/{{ item }}
+  with_items:
+    - cron.deny 
+    - at.deny
+  become: yes
+  become_method: sudo
+
+
+- file: path=/etc/{{ item }} owner=root group=root mode=0400  state=touch
+  with_items:
+    - cron.allow
+    - at.allow
+  become: yes
+  become_method: sudo
+
+
+- name: 2.1 Set crontab privlege
+  file:  path=/etc/{{ item }} owner=root group=root mode=0400   recurse=yes
+  with_items:
+    - crontab
+  file:  path={{ item }} owner=root group=root   mode=go-rwx   recurse=yes
+  with_items:
+    - /var/spool/cron
+    - /etc/cron.d
+    - /etc/cron.daily
+    - /etc/cron.hourly
+    - /etc/cron.monthly
+    - /etc/cron.weekly
+  become: yes
+  become_method: sudo
+
+- name: 2.3 Set banner
+  template: src={{ item }}  dest=/{{ item }}  owner=root group=root mode=644 backup=yes
+  become: yes
+  become_method: sudo
+  tags: 
+    - t_harden_2_3
+  with_items:
+    - etc/motd
+    - etc/issue
+    - etc/issue.net
+ 
+
+- name: 2.4 disable root login tty
+  template: src={{ item }}  dest=/{{ item }}  owner=root group=root mode=400 backup=yes
+  become: yes
+  become_method: sudo
+  tags: 
+    - t_harden_2_3
+  with_items:
+    - etc/securetty
+
+ 
+
+- name: 2.5 set deamon umask
+  lineinfile:
+    dest: /etc/rc.d/init.d/functions
+    state: present
+    regexp: "#umask"
+    line: 'umask 022'
+    backrefs: yes
+  become: yes
+  become_method: sudo
+  tags: 
+    - t_harden_2_5

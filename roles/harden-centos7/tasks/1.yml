@@ -1,0 +1,99 @@
+---
+- name: 1.1 Remove the user adm,lp,sync,shutdown,halt,news,uucp,operator,games,gopher,ftp
+  user: name={{ item }}  state=absent
+  with_items:
+    - adm
+    - lp
+    - sync
+    - shutdown
+    - halt
+    - news
+    - uucp
+    - operator
+    - games
+    - gopher
+    - ftp
+  become: yes
+  become_method: sudo
+  tags:
+    - t_harden_1_1
+
+- name: 1.1 Remove the group  lp、uucp、games、dip
+  group: name={{ item }} state=absent
+  with_items:
+    - adm
+    - lp
+    - news
+    - uucp
+    - games
+    - dip
+    - pppusers
+  become: yes
+  become_method: sudo
+  tags:
+    - t_harden_1_1
+
+- name: 1.5 chmod 700   /home/*
+  file: path=/home/{{ item.username }}  state=directory mode=0700 
+  with_items: "{{users}}"
+  become: yes
+  become_method: sudo
+  tags:
+    - t_harden_1_5
+
+- name: 1.7 Set Default mask value.
+  lineinfile: dest=/etc/{{ item }} line='umask 022' insertafter=EOF
+  with_items:
+    - profile 
+    - csh.login 
+    - csh.cshrc 
+    - bashrc
+  become: yes
+  become_method: sudo
+  tags:
+    - t_harden_1_7
+    
+- file: path=/etc/{{ item }} state=file mode=0444
+  with_items:
+    - profile 
+    - csh.login 
+    - csh.cshrc 
+    - bashrc
+  become: yes
+  become_method: sudo
+  
+ 
+- name: 1.8 Password length > 12
+  template: src=login.defs  dest=/etc/login.defs owner=root group=root mode=644 backup=yes
+  become: yes
+  become_method: sudo
+  tags: 
+    - t_harden_1_8
+
+
+- name:  1.10 commonts out useless aliases
+  template: src=aliases  dest=/etc/aliases owner=root group=root mode=644 backup=yes
+  become: yes
+  become_method: sudo
+  tags: 
+    - t_harden_1_10
+
+
+- shell: newaliases
+  become: yes
+  become_method: sudo
+
+- name:  1.11 auto log out after  600s 
+  template: src=etc/profile  dest=/etc/profile owner=root group=root mode=644 backup=yes
+  become: yes
+  become_method: sudo
+  tags: 
+    - t_harden_1_11
+
+- name:  1.13 IP SPOOF：
+  template: src=etc/host.conf  dest=/etc/host.conf owner=root group=root mode=644 backup=yes
+  become: yes
+  become_method: sudo
+  tags: 
+    - t_harden_1_13
+ 
